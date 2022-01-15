@@ -1,0 +1,73 @@
+<html>
+
+<head>
+
+
+</head>
+
+<body>
+
+    <form>
+        <table>
+            <tr>
+                <td>
+                    <input type="text" id="NFT_text" />
+                </td>
+                <td>
+                    <input type="button" id="mint" value="mint" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <span id="mint_response"></span>
+                </td>
+            </tr>
+
+    </form>
+
+
+    <script>
+        const mintButton = document.getElementById("mint");
+        console.log(" setting mint ");
+        mintButton.onclick = mintText;
+        console.log(" mint set ");
+        const mintResponse = document.getElementById("mint_response");
+
+        const form = new FormData();
+
+        const options = {
+            method: 'POST',
+            body: form,
+            headers: {
+                "Authorization": "222b05ce-c37f-4bdd-b40e-2a94f3efa570",
+            },
+        };
+
+        async function mintText() {
+            console.log("minting");
+            var text = document.getElementById("NFT_text");
+            var nftText = text.value;
+            varstream = fs.createReadStream("");
+            console.log("text: " + text.value);
+            form.append('file', text.value);
+
+            await fetch("https://api.nftport.xyz/v0/mints/easy/files?" + new URLSearchParams({
+                    chain: 'rinkeby',
+                    name: "Test_chat_nft",
+                    description: "Test chat NFT",
+                    mint_to_address: "0xBE5C10174947268F796417a93D3009ab133b7818",
+                }), options)
+                .then(function(response) {
+                    return response.json()
+                })
+                .then(function(responseJson) {
+                    // Handle the response
+                    mintResponse.innerHTML = responseJson;
+                    console.log(responseJson);
+                })
+            console.log("minted");
+        }
+    </script>
+</body>
+
+</html>
