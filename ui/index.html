@@ -70,8 +70,8 @@ https://templatemo.com/tm-570-chain-app-dev
                         <ul class="nav">
 
                             <li>
-                                <div class="gradient-button"><i class="fa fa-sign-in-alt"></i> Connect Web 3
-                                </div>
+                                <div class="gradient-button"><i class="fa fa-sign-in-alt"></i>&nbsp;<span id="connect_web_3"> Connect Web 3</span></div>
+                                <span id="show_wallet"></span>
                             </li>
                         </ul>
                         <a class='menu-trigger'>
@@ -178,7 +178,7 @@ https://templatemo.com/tm-570-chain-app-dev
                                         <tr>
                                             <td>
                                                 <p>
-                                                    <span id="qyot"><small><b>QYOT</b></small></span>
+                                                    <span id="qyot"><small><b><a href="javascript:void(0);" onclick="mintNFT('0xCa41F0350B90C62153e4ec3c404e18995418d202','Jim.eth','test data')">QYOT</a></b></small></span>
                                                     <span class="other">08:42</span>
                                                 </p>
                                             </td>
@@ -204,10 +204,43 @@ https://templatemo.com/tm-570-chain-app-dev
                                 <input id="message_box" type="text" placeholder="enter your message ..." class="bg-transparent" />
                             </td>
                             <td>
-                                <button type="submit" id="send_button" class="bg-transparent">Send <i class="fa fa-angle-right"></i></button>
+                                <button type="submit" id="send_button" class="bg-transparent">send <i class="fa fa-angle-right"></i></button>
                             </td>
                         </tr>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mints" class="services section">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="service-item first-service">
+                        <h2>Minted NFT Quotes</h2>
+                        <center>
+                            <table id="minted_nft_quote_table">
+
+
+                            </table>
+                        </center>
+                    </div>
+                    <span id="mint_result"></span>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="service-item first-service">
+                        <h2>NFT Quotes On Sale</h2>
+                        <center>
+                            <table id="on_sale_nft_quotes">
+
+                            </table>
+                        </center>
+                    </div>
                 </div>
             </div>
         </div>
@@ -238,65 +271,6 @@ https://templatemo.com/tm-570-chain-app-dev
                     </form>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-3">
-                    <div class="footer-widget">
-                        <h4>Contact Us</h4>
-                        <p>Rio de Janeiro - RJ, 22795-008, Brazil</p>
-                        <p><a href="#">010-020-0340</a></p>
-                        <p><a href="#">info@company.co</a></p>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="footer-widget">
-                        <h4>About Us</h4>
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Services</a></li>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Testimonials</a></li>
-                            <li><a href="#">Pricing</a></li>
-                        </ul>
-                        <ul>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Testimonials</a></li>
-                            <li><a href="#">Pricing</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="footer-widget">
-                        <h4>Useful Links</h4>
-                        <ul>
-                            <li><a href="#">Free Apps</a></li>
-                            <li><a href="#">App Engine</a></li>
-                            <li><a href="#">Programming</a></li>
-                            <li><a href="#">Development</a></li>
-                            <li><a href="#">App News</a></li>
-                        </ul>
-                        <ul>
-                            <li><a href="#">App Dev Team</a></li>
-                            <li><a href="#">Digital Web</a></li>
-                            <li><a href="#">Normal Apps</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <div class="footer-widget">
-                        <h4>About Our Company</h4>
-                        <div class="logo">
-                            <img src="assets/images/white-logo.png" alt="">
-                        </div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
-                    </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="copyright-text">
-                        <p>Copyright © 2022 Chain App Dev Company. All Rights Reserved.
-                            <br>Design: <a href="https://templatemo.com/" target="_blank" title="css templates">TemplateMo</a></p>
-                    </div>
-                </div>
-            </div>
         </div>
     </footer>
 
@@ -309,6 +283,7 @@ https://templatemo.com/tm-570-chain-app-dev
     <script src="assets/js/imagesloaded.js"></script>
     <script src="assets/js/popup.js"></script>
     <script src="assets/js/custom.js"></script>
+    <script src="assets/js/iqmot.js"></script>
 
     <script>
         console.log("window : " + window);
@@ -329,16 +304,337 @@ https://templatemo.com/tm-570-chain-app-dev
             console.log("msg: " + message);
 
             // post to ipfs 
-            var ipfsHash = $.when(await postToIpfs(message));
+            var ipfsHash = $.when(await postToIpfs(message)).value;
             console.log("ipfs hash: " + ipfsHash);
             // ping contract 
 
             // post to my page 
             var sender = "me.eth";
             postToConversation(message, sender, ipfsHash, true);
+            messageBox.value = "";
+        }
+        const form = new FormData();
+
+        const options = {
+            method: 'POST',
+            body: form,
+            headers: {
+                "Authorization": "222b05ce-c37f-4bdd-b40e-2a94f3efa570",
+            },
+        };
+        const mintResponse = document.getElementById("mint_result");
+
+
+        async function mintNFT(mintAddress, user, text) {
+            console.log("minting" + mintAddress + " " + user + " " + text);
+            let blob = new Blob([text], {
+                type: 'text/plain'
+            });
+            console.log("text: " + blob.value);
+            form.append('file', blob);
+
+            await fetch("https://api.nftport.xyz/v0/mints/easy/files?" + new URLSearchParams({
+                    chain: 'rinkeby',
+                    name: "Quote by " + user,
+                    description: "Test chat NFT",
+                    mint_to_address: mintAddress,
+                }), options)
+                .then(function(response) {
+                    return response.json()
+                })
+                .then(function(responseJson) {
+                    // Handle the response
+                    console.log(responseJson.transaction_external_url);
+
+                    var date = new Date();
+                    const options = {
+                        timeZone: "GMT",
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                        hour12: false,
+                        hour: "numeric",
+                        minute: "numeric",
+                        seconds: "numeric"
+                    }
+                    var localized = date.toLocaleDateString("en-UK", options);
+
+                    addMintedQuotes(text, user, localized, responseJson.transaction_external_url)
+
+                    // mintResponse.innerHTML = responseJson;
+                    console.log(responseJson);
+
+
+                })
+            console.log("minted");
         }
 
-        async function mintNFTQuote() {
+
+        const mintedQuotesTable = document.getElementById("minted_nft_quote_table");
+
+        function initMintedQuotes() {
+            var quote = "I said that";
+            var speaker = "Mike.eth";
+            var date = "2022-01-17 20:21";
+            var link = "https://dummy";
+            //addMintedQuotes(quote, speaker, date, link);
+        }
+
+        function addMintedQuotes(quote, speaker, date, txLink) {
+
+
+
+            var currencies = ["ETH", "USDC", "USDT", "SHIB", "MIM"];
+
+
+            var row = mintedQuotesTable.insertRow();
+
+            var quoteCell = row.insertCell();
+            var leftQuote = document.createElement("i");
+            leftQuote.setAttribute("class", "fa fa-quote-left");
+
+            var link = document.createElement("a");
+            link.setAttribute("href", txLink);
+            link.setAttribute("target", "_blank");
+
+            var formatBold = document.createElement("b");
+            var quoteTxt = document.createTextNode(quote);
+            formatBold.appendChild(quoteTxt);
+            link.appendChild(formatBold);
+
+            var rightQuote = document.createElement("i");
+            rightQuote.setAttribute("class", "fa fa-quote-right");
+
+            quoteCell.append(leftQuote);
+            quoteCell.append(link);
+            quoteCell.append(rightQuote);
+
+            var speakerCell = row.insertCell();
+
+            var spearkTxt = document.createTextNode(speaker);
+
+            var comment = document.createElement("i");
+            comment.setAttribute("class", "far fa-comment");
+
+            speakerCell.append(spearkTxt);
+            speakerCell.append(comment);
+
+            var dateCell = row.insertCell();
+
+            var timeTxt = document.createTextNode(date);
+            var history = document.createElement("i");
+            history.setAttribute("class", "fa fa-history");
+
+            dateCell.append(timeTxt);
+            dateCell.append(history);
+
+            var spaceCell = row.insertCell();
+            var space = document.createTextNode("   ");
+            spaceCell.append(space);
+
+            var priceCell = row.insertCell();
+            priceCell.setAttribute("valign", "top");
+            var priceBox = document.createElement("input");
+            priceCell.append(priceBox);
+            priceBox.setAttribute("type", "text");
+            priceBox.setAttribute("id", "price");
+            priceBox.setAttribute("class", "bg-transparent");
+            priceBox.setAttribute("placeholder", "enter sale price ...");
+
+
+            var currencyCell = row.insertCell();
+            var selectCurrency = document.createElement("select");
+            currencyCell.appendChild(selectCurrency);
+
+            selectCurrency.setAttribute("class", "bg-transparent");
+            for (var x = 0; x < currencies.length; x++) {
+
+                var currency = currencies[x];
+
+                var option = document.createElement("option");
+                option.setAttribute("value", currency);
+
+                var currencyTxt = document.createTextNode(currency);
+                option.appendChild(currencyTxt);
+                fetchPrice(currency, option);
+                selectCurrency.append(option);
+
+            }
+
+
+            var sellCell = row.insertCell();
+            var sellButton = document.createElement("button");
+            sellButton.setAttribute("id", "sell");
+            sellButton.setAttribute("class", "bg-transparent");
+            sellCell.appendChild(sellButton);
+
+            var sellText = document.createTextNode("sell");
+            var rightAngle = document.createElement("i");
+            rightAngle.setAttribute("class", "fa fa-angle-right");
+            sellButton.appendChild(sellText);
+            sellButton.append(rightAngle);
+
+
+            /*
+                        <tr>
+                                                <td>
+                                                    <i class="fa fa-quote-left"></i> &nbsp; I said that <i class="fa fa-quote-right"></i>&nbsp;
+                                                </td>
+                                                <td>
+                                                    Jim Marcus <i class="far fa-comment"></i>
+                                                </td>
+                                                <td>
+                                                    &nbsp; 2022-01-17 20:21 <i class="fa fa-history"></i>
+                                                </td>
+                                                <td>
+                                                    &nbsp;
+                                                </td>
+                                                <td valign="top">
+                                                    &nbsp; <input type="text" id="price" class="bg-transparent" placeholder="enter sale price" />
+                                                </td>
+                                                <td>
+                                                    <select class="bg-transparent">
+                                                    <option value="ETH">ETH <small>(3,336.3)</small></option>
+                                                    <option value="USDC">USDC <small>(0.99)</small></option>                                        
+                                                    <option value="USDT">USDT <small>(1.01)</small></option>
+                                                    <option value="SHIB">SHIB <small>(0.00003073)</small></option>
+                                                    <option value="USDT">MIM <small>(1.00)</small></option>
+                                                </select>
+                                                </td>
+                                                <td>
+                                                    <button id="sell" class="bg-transparent">sell <i class="fa fa-angle-right"></i></button>
+                                                </td>
+
+                                            </tr>
+
+                                            */
+
+
+        }
+
+        function getOnSaleQuotes() {
+
+
+        }
+
+        async function fetchPriceAndMultiply(currency, node, amount) {
+            var url = "https://api.covalenthq.com/v1/pricing/tickers/?tickers=" + currency + "&quote-currency=USD&format=JSON&key=ckey_43370c93a0914e429ae00eca81d";
+            fetch(url).then(function(response) {
+                    respData = response.json();
+                    console.log("response data :- ");
+                    console.log(respData);
+                    return respData
+                })
+                .then(function(data) {
+                    console.log("processing data");
+                    console.log(data.data);
+                    var price = "( " + (data.data.items[0].quote_rate * amount) + " )";
+                    console.log("price: " + price);
+                    var priceTxt = document.createTextNode(price);
+                    node.appendChild(priceTxt);
+                    return price;
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        }
+
+        async function fetchPrice(currency, node) {
+            var url = "https://api.covalenthq.com/v1/pricing/tickers/?tickers=" + currency + "&quote-currency=USD&format=JSON&key=ckey_43370c93a0914e429ae00eca81d";
+            fetch(url).then(function(response) {
+                    respData = response.json();
+                    console.log("response data :- ");
+                    console.log(respData);
+                    return respData
+                })
+                .then(function(data) {
+                    console.log("processing data");
+                    console.log(data.data);
+                    var price = "( " + data.data.items[0].quote_rate + " )";
+                    console.log("price: " + price);
+                    var priceTxt = document.createTextNode(price);
+                    node.appendChild(priceTxt);
+                    return price;
+                })
+                .catch(function(err) {
+                    console.log(err);
+                });
+        }
+
+        function getOnSaleQuotes() {
+            var onSaleNFTQuoteTable = document.getElementById("on_sale_nft_quotes");
+            var row = onSaleNFTQuoteTable.insertRow();
+
+            var quote = "the world is new";
+            var speaker = "Mike.eth";
+            var price = 12;
+            var currency = "ETH";
+            var date = "2022-01-17 10:00";
+
+            var quoteCell = row.insertCell();
+            var leftQuote = document.createElement("i");
+            leftQuote.setAttribute("class", "fa fa-quote-left");
+            var rightQuote = document.createElement("i");
+            rightQuote.setAttribute("class", "fa fa-quote-right");
+            var formatBold = document.createElement("b");
+            var quoteTxt = document.createTextNode(quote);
+            formatBold.appendChild(quoteTxt);
+            quoteCell.appendChild(leftQuote);
+            quoteCell.append(formatBold);
+            quoteCell.append(rightQuote);
+
+            var speakerCell = row.insertCell();
+            var astronaut = document.createElement("i");
+            astronaut.setAttribute("class", "fa fa-user-astronaut");
+            var speakerText = document.createTextNode(speaker);
+            speakerCell.appendChild(speakerText);
+            speakerCell.appendChild(astronaut);
+
+
+            var priceCell = row.insertCell();
+            var square = document.createElement("i");
+            square.setAttribute("class", "far fa-square");
+            var priceTxt = document.createTextNode(price);
+            priceCell.appendChild(priceTxt);
+            priceCell.appendChild(square);
+
+            var currencyCell = row.insertCell();
+            var currencyText = document.createTextNode(currency);
+            currencyCell.append(currencyText);
+            var usdPrice = document.createElement("small");
+            currencyCell.append(usdPrice);
+            fetchPriceAndMultiply(currency, usdPrice, price);
+
+            var dateCell = row.insertCell();
+            var dateIcon = document.createElement("i");
+            dateIcon.setAttribute("class", "fa fa-clock");
+            dateText = document.createTextNode(date);
+            dateCell.appendChild(dateIcon);
+            dateCell.appendChild(dateText);
+
+            var trashCell = row.insertCell();
+            var trashIcon = document.createElement("i");
+            trashIcon.setAttribute("class", "fa fa-trash-alt");
+            trashCell.append(trashIcon);
+
+            /*
+             <tr>
+                <td> <i class="fa fa-quote-left"></i><b>the world is new</b> <i class="fa fa-quote-right"></i></td>
+                <td> Mike.eth &nbsp;<i class="fa fa-user-astronaut"></i> </td>
+                <td> &nbsp;12</td>
+                <td> <i class="fa fa-dollar-sign"></i>ETH <small>($39,990.12)</small></td>
+                <td> <i class="fa fa-clock"></i> 2022-01-17 10:00</td>
+                <td> <i class="fa fa-trash-alt"></i></td>
+            </tr>
+            */
+        }
+
+        function postToMintTable() {
+
+        }
+
+        async function mintNFTQuote(cid, user, account) {
+
 
         }
 
@@ -382,7 +678,7 @@ https://templatemo.com/tm-570-chain-app-dev
                 msgCellMsg = msgRow.insertCell();
                 msgCellQuote = msgRow.insertCell();
                 quote = "qmot=" + ipfsHash;
-                qText = "QMOT";
+                qText = " QMOT";
 
             } else {
                 msgCellQuote = msgRow.insertCell();
@@ -390,7 +686,7 @@ https://templatemo.com/tm-570-chain-app-dev
                 msgCellPerson.appendChild(youIcon);
                 msgCellMsg = msgRow.insertCell();
                 msgCellPerson = msgRow.insertCell();
-                qText = "QYOT";
+                qText = " QYOT";
             }
 
             var personSpan = document.createElement("span");
@@ -414,43 +710,67 @@ https://templatemo.com/tm-570-chain-app-dev
             msgCellQuote.appendChild(quoteP);
 
             var time = Date.now();
+
+            const options = {
+                timeZone: "GMT",
+                hour12: false,
+                hour: "numeric",
+                minute: "numeric",
+                seconds: "numeric"
+            }
+
+            var timeString = new Date(time).toLocaleTimeString("en-US", options);
+            console.log("time str:" + timeString);
             var dateSpan = document.createElement("span");
             dateSpan.setAttribute("class", "other");
-            var dateText = document.createTextNode(time);
+            var dateText = document.createTextNode(timeString);
             dateSpan.appendChild(dateText);
             quoteP.append(dateSpan);
 
             var quoteSpan = document.createElement("span");
+            quoteP.append(quoteSpan);
             quoteSpan.setAttribute("id", quote);
+
             var formatSmall = document.createElement("small");
             quoteSpan.appendChild(formatSmall);
+
             var formatBold = document.createElement("b");
             formatSmall.append(formatBold);
+
+            var qa = document.createElement("a");
+            formatBold.appendChild(qa);
+
+            qa.setAttribute("href", "javascript:void(0)");
+            var onclickText = "mintNFT('" + account + "','" + account + "','" + message + "')";
+            qa.setAttribute("onclick", onclickText);
+
             var qTxt = document.createTextNode(qText);
-            formatBold.append(qTxt);
-            quoteP.appendChild(quoteSpan);
+            qa.appendChild(qTxt);
+
+
+            console.log(quoteSpan);
 
             console.log("posted to conversation : " + message);
 
 
             /*
             <td>
-                                                <i class="fa fa-user-alt"></i><br/>
-                                                <span><font color="black">Mike.eth</font></span>
-                                            </td>
-                                            <td>
+                <i class="fa fa-user-alt"></i><br/>
+                <span><font color="black">Mike.eth</font></span>
+            </td>
+            <td>
 
-                                                <div class="gradient-button">
-                                                    <a href="#">No Ninjas</a>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p>
-                                                    <span class="other"> 08:41</span>
-                                                    <span id="qmot=ipfsHash"><small><b>QMOT</b></small> </span>
-                                                </p>
-                                            </td>
-                                            */
+                <div class="gradient-button">
+                    <a href="#">No Ninjas</a>
+                </div>
+            </td>
+            <td>
+                <p>
+                    <span class="other"> 08:41</span>
+                    <span id="qmot=ipfsHash"><small><b>QMOT</b></small> </span>
+                </p>
+            </td>
+            */
 
 
         }
@@ -503,10 +823,87 @@ https://templatemo.com/tm-570-chain-app-dev
 
             return hash;
         }
-    </script>
-</body>
 
-</html>cript>
+
+        var acccount;
+
+        const onboardButton = document.getElementById("connect_web_3");
+        const showWallet = document.getElementById("show_wallet");
+
+        const iqmotAddress = 0xa580BB8F459BBFba5972Ae64FE4A78784a782962;
+        var iqmotContract;
+        //Created check function to see if the MetaMask extension is installed
+        const isMetaMaskInstalled = () => {
+
+            const {
+                ethereum
+            } = window;
+            return Boolean(ethereum && ethereum.isMetaMask);
+        };
+
+        const MetaMaskClientCheck = () => {
+            //Now we check to see if Metmask is installed
+            if (!isMetaMaskInstalled()) {
+                console.log("metamask not installed");
+                //If it isn't installed we ask the user to click to install it
+                onboardButton.innerText = 'Click here to install MetaMask!';
+                //When the button is clicked we call this function
+                onboardButton.onclick = onClickInstall;
+                //The button is now disabled
+                onboardButton.disabled = false;
+            } else {
+                //If it is installed we change our button text
+                onboardButton.innerText = 'Click to Connect Metamask';
+                console.log("metamask installed");
+                onboardButton.addEventListener('click', () => {
+                    getAccount();
+                    onboardButton.innerText = "Web 3 Connected";
+
+                });
+            }
+        };
+
+        const initialize = () => {
+            MetaMaskClientCheck();
+            initMintedQuotes();
+            getOnSaleQuotes();
+        };
+
+        window.addEventListener('DOMContentLoaded', initialize);
+
+        async function getAccount() {
+            const accounts = await ethereum.request({
+                method: 'eth_requestAccounts'
+            });
+            account = accounts[0];
+            showWallet.innerHTML = "<b>Connected Wallet :: " + account + "</b>";
+
+            iqmotContract = new web3.eth.Contract(iqmotAbi, iqmotAddress);
+        }
+
+        //We create a new MetaMask onboarding object to use in our app
+        //const onboarding = new MetaMaskOnboarding({ forwarderOrigin });
+
+        //This will start the onboarding proccess
+        const onClickInstall = () => {
+            onboardButton.innerText = 'Onboarding in progress';
+            onboardButton.disabled = true;
+            //On this object we have startOnboarding which will start the onboarding process for our end user
+            onboarding.startOnboarding();
+        };
+
+        const onClickConnect = async() => {
+            try {
+                // Will open the MetaMask UI
+                // You should disable this button while the request is pending!
+                await ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    </script>
 </body>
 
 </html>
